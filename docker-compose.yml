@@ -1,6 +1,6 @@
 services:
   irremote:
-    image: ghcr.io/yanorei32/web-ir-remote:0.1.0
+    image: ghcr.io/yanorei32/web-ir-remote:0.1.1
     hostname: irremote
     container_name: irremote__irremote
     restart: unless-stopped
