@@ -1,0 +1,56 @@
+services:
+  irremote:
+    image: ghcr.io/yanorei32/web-ir-remote:0.1.0
+    hostname: irremote
+    container_name: irremote__irremote
+    restart: unless-stopped
+
+    environment:
+      LISTEN: 0.0.0.0:3000
+      TARGET: 192.168.0.133:6464
+
+    volumes:
+      - type: bind
+        source: ./config/ir-remote.xml
+        target: /etc/ir-remote.xml
+        read_only: true
+
+      - type: bind
+        source: ./config/hk9811/
+        target: /etc/hk9811/
+        read_only: true
+
+    command: /usr/bin/web-ir-remote
+
+    deploy:
+      resources:
+        limits:
+          memory: 128m
+
+    networks:
+      - default
+
+  cloudflared:
+    image: cloudflare/cloudflared:2025.4.0@sha256:522827fe6220249d72ade9a85cf5bdcc52c18ef1d13c7a3bb7480f56a0fd36e6
+    hostname: cloudflared
+    container_name: irremote__cloudflared
+
+    restart: unless-stopped
+
+    environment:
+      TUNNEL_LOGFILE: /dev/stdout
+
+    command: tunnel run --token ${TUNNEL_TOKEN}
+    user: root
+
+    deploy:
+      resources:
+        limits:
+          memory: 128m
+
+    networks:
+      default:
+
+networks:
+  default:
+    name: irremote__default
