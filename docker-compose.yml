@@ -2,7 +2,7 @@ services:
   irremote:
     image: ghcr.io/yanorei32/web-ir-remote:0.1.1
     hostname: irremote
-    container_name: irremote__irremote
+    container_name: irremote${VARIANT:-}__irremote
     restart: unless-stopped
 
     environment:
@@ -16,8 +16,8 @@ services:
         read_only: true
 
       - type: bind
-        source: ./config/hk9811/
-        target: /etc/hk9811/
+        source: ./config/${CONTROLLER}/
+        target: /etc/${CONTROLLER}/
         read_only: true
 
     command: /usr/bin/web-ir-remote
@@ -33,7 +33,7 @@ services:
   cloudflared:
     image: cloudflare/cloudflared:2025.4.0@sha256:522827fe6220249d72ade9a85cf5bdcc52c18ef1d13c7a3bb7480f56a0fd36e6
     hostname: cloudflared
-    container_name: irremote__cloudflared
+    container_name: irremote${VARIANT:-}__cloudflared
 
     restart: unless-stopped
 
@@ -53,4 +53,4 @@ services:
 
 networks:
   default:
-    name: irremote__default
+    name: irremote${VARIANT:-}__default
